@@ -10,7 +10,7 @@ IMHO rekeying maps with MapRewire is much nicer than having to write boilerplate
 
 ### TL;DR; Syntax
 
-1.  Main Syntax: `left<~right`. Left value is the map that holds the data and keys you'd like to update, Right value is an Elixir List that contains a string for each of the keys that you'd like to update.
+1.  Main Syntax: `left<~>right`. Left value is the map that holds the data and keys you'd like to update, Right value is an Elixir List that contains a string for each of the keys that you'd like to update.
 2.  Transformation Syntax: `left=>right`. Left is the original key, right is the new key.
 
 ## Getting started
@@ -52,7 +52,7 @@ $ iex -S mix
 
 ```elixir
  iex(1)> use MapRewire
- iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~['title=>name', 'id=>shopify_id']
+ iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>['title=>name', 'id=>shopify_id']
  [
    %{"id" => "234923409", "name" => "asdf"},
    %{"shopify_id" => "234923409", "title" => "asdf"}
@@ -87,7 +87,7 @@ defmodule Foo do
   end
 
   def final(data) do
-    data<~@becomes
+    data<~>@becomes
   end
 end
 ```
@@ -127,7 +127,7 @@ defmodule Foo do
   end
 
   def final(data) do
-    data<~@becomes
+    data<~>@becomes
   end
 end
 ```

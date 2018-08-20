@@ -6,7 +6,7 @@ defmodule MapRewire do
 
   ```elixir
    iex(1)> use MapRewire
-   iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~['title=>name', 'id=>shopify_id']
+   iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>['title=>name', 'id=>shopify_id']
    [
   	 %{"id" => "234923409", "name" => "asdf"},
   	 %{"shopify_id" => "234923409", "title" => "asdf"}
@@ -39,7 +39,7 @@ defmodule MapRewire do
     end
 
     def final(data) do
-    	data<~@becomes
+    	data<~>@becomes
     end
   end```
   """
@@ -56,7 +56,7 @@ defmodule MapRewire do
   @debug Application.get_env(:map_rewire, :debug?)
 
   @doc false
-  defmacro data <~ transforms do
+  defmacro data <~> transforms do
     quote do
       rewire(unquote(data), unquote(transforms))
     end
