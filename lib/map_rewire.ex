@@ -71,20 +71,32 @@ defmodule MapRewire do
   """
   def rewire(content, list) when is_map(content) and is_list(list) do
     if(@debug) do
-      Logger.info("rewire#content: #{inspect(content)}")
-      Logger.info("rewire#list: #{inspect(list)}")
+      Logger.info("[MapRewire:arg1]rewire#content: #{inspect(content)}")
+      Logger.info("[MapRewire:arg2]rewire#list: #{inspect(list)}")
     end
 
     rewire_do(content, list)
   end
 
-  def rewire(arg1, arg2) when is_map(arg1) == false and is_list(arg2) == false,
-    do:
-      raise(
-        ArgumentError,
-        "[MapRewire:arg1<~>arg2] bad arguments. Arg1 should be a map, Arg2 should be a list." <>
-          " Arg1: `#{inspect(arg1)}`, Arg2: `#{inspect(arg2)}`"
-      )
+  def rewire(content, binary) when is_map(content) and is_binary(binary) do
+    if(@debug) do
+      Logger.info("[MapRewire:arg1]rewire#content: #{inspect(content)}")
+      Logger.info("[MapRewire:arg2]rewire#binary: #{inspect(binary)}")
+    end
+
+    list = transform_binary_to_list(binary)
+
+    rewire_do(content, list)
+  end
+
+  def rewire(arg1, arg2)
+      when is_map(arg1) == false and (is_list(arg2) == false or is_binary(arg2) == false),
+      do:
+        raise(
+          ArgumentError,
+          "[MapRewire:arg1<~>arg2] bad arguments. Arg1 should be a map, Arg2 should be a list or string." <>
+            " Arg1: `#{inspect(arg1)}`, Arg2: `#{inspect(arg2)}`"
+        )
 
   def rewire(arg1, _arg2) when is_map(arg1) == false,
     do:
@@ -93,11 +105,13 @@ defmodule MapRewire do
         "[MapRewire:arg1<~>arg2] bad argument. Expected Arg1 to be a map, got `#{inspect(arg1)}`"
       )
 
-  def rewire(_arg1, arg2) when is_list(arg2) == false,
+  def rewire(_arg1, arg2) when is_list(arg2) == false and is_binary(arg2) == false,
     do:
       raise(
         ArgumentError,
-        "[MapRewire:arg1<~>arg2] bad argument. Expected Arg2 to be a list, got `#{inspect(arg2)}`"
+        "[MapRewire:arg1<~>arg2] bad argument. Expected Arg2 to be a list or string, got `#{
+          inspect(arg2)
+        }`"
       )
 
   def rewire(arg1, arg2),
@@ -110,8 +124,8 @@ defmodule MapRewire do
 
   defp rewire_do(content, list) do
     if(@debug) do
-      Logger.info("rewire_do#content: #{inspect(content)}")
-      Logger.info("rewire_do#list: #{inspect(list)}")
+      Logger.info("[MapRewire:arg1]rewire_do#content: #{inspect(content)}")
+      Logger.info("[MapRewire:arg2]rewire_do#list: #{inspect(list)}")
     end
 
     Enum.map(list, &transform_key_to_list/1)
@@ -122,9 +136,21 @@ defmodule MapRewire do
   `MapRewire.fromto_to_list('title=>name')`
   output: `['title', 'name']`
   """
+  def transform_binary_to_list(item) do
+    if(@debug) do
+      Logger.info("[MapRewire]transform_binary_to_list#item: #{inspect(item)}")
+    end
+
+    String.split("#{item}", " ")
+  end
+
+  @doc """
+  `MapRewire.fromto_to_list('title=>name')`
+  output: `['title', 'name']`
+  """
   def transform_key_to_list(item) do
     if(@debug) do
-      Logger.info("transform_key_to_list#item: #{inspect(item)}")
+      Logger.info("[MapRewire]transform_key_to_list#item: #{inspect(item)}")
     end
 
     String.split("#{item}", "#{@transform_to}")
@@ -136,9 +162,9 @@ defmodule MapRewire do
   """
   def replace_key([key1, key2], map) do
     if(@debug) do
-      Logger.info("replace_key#key1: #{inspect(key1)}")
-      Logger.info("replace_key#key2: #{inspect(key2)}")
-      Logger.info("replace_key#map: #{inspect(map)}")
+      Logger.info("[MapRewire]replace_key#key1: #{inspect(key1)}")
+      Logger.info("[MapRewire]replace_key#key2: #{inspect(key2)}")
+      Logger.info("[MapRewire]replace_key#map: #{inspect(map)}")
     end
 
     {value, new_map} = Map.pop(map, key1)
