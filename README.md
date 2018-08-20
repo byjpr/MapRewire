@@ -68,6 +68,20 @@ $ iex -S mix
  ]
 ```
 
+```elixir
+ iex(1)> use MapRewire
+ iex(2)> content = %{
+	 "id"=>"234923409",
+	 "title"=>"asdf",
+	 "body_html"=>"asdf"
+ }
+ iex(3)> content<~>'title=>name id=>shopify_id body_html=>desc no_match=>wow_much_field'
+ [
+   %{"id" => "234923409", "name" => "asdf", "body_html" => "asdf"},
+   %{"shopify_id" => "234923409", "title" => "asdf", "desc" => "asdf"}
+ ]
+```
+
 ### Running as part of a module
 
 **Example 1:**
