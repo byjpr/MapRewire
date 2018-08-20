@@ -1,6 +1,9 @@
 # MapRewire
 
-Syntactic sugar to simply bulk rekey maps.
+Syntactic sugar to simply bulk rekey maps. MapRewire takes two arguments, data (map) and transformation (list of transformations).
+
+Main Syntax: `left<~right`. Left value is the map that holds the data and keys you'd like to update, Right value is an Elixir List that contains a string for each of the keys that you'd like to update.
+Transformation Syntax: `left=>right`. Left is the original key, right is the new key.
 
 ### Why did I do this?
 
