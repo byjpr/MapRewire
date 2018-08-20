@@ -131,7 +131,7 @@ Calling `Foo.bar()` will result in the output:
 
 ```elixir
 [
-   %{ "age"=> 31, "languages"=> ["Erlang", "Ruby", "Elixir"], "name"=> "John" },
-   %{ "years_old"=> 31, "technologies_known"=> ["Erlang", "Ruby", "Elixir"], "this"=> "John" }
+   %{ "age" => 31, "languages" => ["Erlang", "Ruby", "Elixir"], "name" => "John" },
+   %{ "years_old" => 31, "technologies_known" => ["Erlang", "Ruby", "Elixir"], "this" => "John" }
  ]
 ```
