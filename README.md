@@ -2,14 +2,16 @@
 
 Syntactic sugar to simply bulk rekey maps. MapRewire takes two arguments, data (map) and transformation (list of transformations).
 
-Main Syntax: `left<~right`. Left value is the map that holds the data and keys you'd like to update, Right value is an Elixir List that contains a string for each of the keys that you'd like to update.
-Transformation Syntax: `left=>right`. Left is the original key, right is the new key.
-
 ### Why did I do this?
 
 Simply because I am super lazy, and writing out functions to take maps and convert them to different keys was boring (and irritating) the shit out of me.
 
 writing out `%{"id"=>"234923409", "title"=>"asdf"}<~['title=>name', 'id=>another_id']` is a much nicer than: `defp convert_map(data), do: %{ "another_id" => data["id"], "name" => data["title"] }`.
+
+### TL;DR; Syntax
+
+1.  Main Syntax: `left<~right`. Left value is the map that holds the data and keys you'd like to update, Right value is an Elixir List that contains a string for each of the keys that you'd like to update.
+2.  Transformation Syntax: `left=>right`. Left is the original key, right is the new key.
 
 ## Getting started
 
