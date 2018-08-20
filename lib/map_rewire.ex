@@ -78,8 +78,35 @@ defmodule MapRewire do
     rewire_do(content, list)
   end
 
-  def rewire(_, _),
-    do: raise(ArgumentError, "Using rewire with content other than maps is not supported")
+  def rewire(arg1, arg2) when is_map(arg1) == false and is_list(arg2) == false,
+    do:
+      raise(
+        ArgumentError,
+        "[MapRewire:arg1<~>arg2] bad arguments. Arg1 should be a map, Arg2 should be a list." <>
+          " Arg1: `#{inspect(arg1)}`, Arg2: `#{inspect(arg2)}`"
+      )
+
+  def rewire(arg1, _arg2) when is_map(arg1) == false,
+    do:
+      raise(
+        ArgumentError,
+        "[MapRewire:arg1<~>arg2] bad argument. Expected Arg1 to be a map, got `#{inspect(arg1)}`"
+      )
+
+  def rewire(_arg1, arg2) when is_list(arg2) == false,
+    do:
+      raise(
+        ArgumentError,
+        "[MapRewire:arg1<~>arg2] bad argument. Expected Arg2 to be a list, got `#{inspect(arg2)}`"
+      )
+
+  def rewire(arg1, arg2),
+    do:
+      raise(
+        ArgumentError,
+        "[MapRewire:arg1<~>arg2] bad arguments. Error reason not known. Please check inspections: " <>
+          " Arg1: `#{inspect(arg1)}`, Arg2: `#{inspect(arg2)}`"
+      )
 
   defp rewire_do(content, list) do
     if(@debug) do
