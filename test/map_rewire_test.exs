@@ -10,6 +10,17 @@ defmodule MapRewireTest do
 
   test "2" do
     assert(
+      %{"samplekey" => "samplevalue", "second" => "whoo"}
+      <~> "samplekey=>name second=>third never_matching=>30" ==
+        [
+          %{"name" => "samplevalue", "second" => "whoo"},
+          %{"samplekey" => "samplevalue", "third" => "whoo"}
+        ]
+    )
+  end
+
+  test "3" do
+    assert(
       %{"samplekey" => "samplevalue", "second" => "whoo"} <~> ["samplekey=>name", "second=>third"] ==
         [
           %{"name" => "samplevalue", "second" => "whoo"},
