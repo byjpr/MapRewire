@@ -10,7 +10,7 @@ writing out `%{"id"=>"234923409", "title"=>"asdf"}<~['title=>name', 'id=>another
 
 ## Getting started
 
-### Installing
+### 1. Add as a dependency
 
 ```elixir
 def deps do
@@ -20,52 +20,68 @@ def deps do
 end
 ```
 
-#### Want to see inside MapRewire? (Optionally)
+### 2. Download
+
+```bash
+$ mix deps.get
+```
+
+### 3 (Optionally). Want to see inside MapRewire?
+
+Add to config.exs
 
 ```elixir
 config :map_rewire,
   debug?: true
 ```
 
-### In iex
+### 4. Run!
+
+```bash
+$ iex -S mix
+```
+
+## Usage
+
+### Running in iex
 
 ```elixir
  iex(1)> use MapRewire
  iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~['title=>name', 'id=>shopify_id']
  [
-	 %{"id" => "234923409", "name" => "asdf"},
-	 %{"shopify_id" => "234923409", "title" => "asdf"}
+   %{"id" => "234923409", "name" => "asdf"},
+   %{"shopify_id" => "234923409", "title" => "asdf"}
  ]
 ```
 
-### In file
+### Running as part of a module
 
 ```elixir
 defmodule Foo do
-	use MapRewire
+  use MapRewire
 
-	@becomes [
-		'id=>shopify_id',
-		'title=>name',
-		'body_html=>description'
-	]
+  @becomes [
+    'id=>shopify_id',
+    'title=>name',
+    'body_html=>description'
+  ]
 
-	def bar do
-		do_some_request()
-		|> get_some_data
-		|> final
-	end
+  def bar do
+    do_some_request()
+    |> get_some_data
+    |> final
+  end
 
-	defp do_some_request do
-		#...
-	end
+  defp do_some_request do
+    #...
+  end
 
-	defp get_some_data(request) do
-		#...
-	end
+  defp get_some_data(request) do
+    #...
+  end
 
-	def final(data) do
-		data<~@becomes
-	end
+  def final(data) do
+    data<~@becomes
+  end
 end
 ```
