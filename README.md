@@ -29,13 +29,14 @@ config :map_rewire,
 
 ### In iex
 
-````elixir
+```elixir
  iex(1)> use MapRewire
  iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~['title=>name', 'id=>shopify_id']
  [
 	 %{"id" => "234923409", "name" => "asdf"},
 	 %{"shopify_id" => "234923409", "title" => "asdf"}
- ]```
+ ]
+```
 
 ### In file
 
@@ -66,5 +67,5 @@ defmodule Foo do
 	def final(data) do
 		data<~@becomes
 	end
-end```
-````
+end
+```
