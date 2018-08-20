@@ -1,6 +1,6 @@
 # MapRewire
 
-Syntactic sugar to simply bulk rekey maps. MapRewire takes two arguments, data (map) and transformation (list of transformations).
+Syntactic sugar to simply bulk rekey maps. MapRewire takes two arguments, data (map) and transformation (list of transformations / string of transformations separated by whitespace).
 
 ### Why did I do this?
 
