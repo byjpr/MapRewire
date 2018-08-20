@@ -9,3 +9,10 @@ def deps do
   ]
 end
 ```
+
+Want to see inside MapRewire?
+
+```elixir
+config :map_rewire,
+  debug?: true
+```
