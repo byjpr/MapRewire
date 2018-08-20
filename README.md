@@ -59,6 +59,15 @@ $ iex -S mix
  ]
 ```
 
+```elixir
+ iex(1)> use MapRewire
+ iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>'title=>name id=>shopify_id'
+ [
+   %{"id" => "234923409", "name" => "asdf"},
+   %{"shopify_id" => "234923409", "title" => "asdf"}
+ ]
+```
+
 ### Running as part of a module
 
 **Example 1:**
@@ -107,11 +116,7 @@ Calling `Foo.bar()` will result in the output:
 defmodule Foo do
   use MapRewire
 
-  @becomes [
-    'age=>years_old',
-    'languages=>technologies_known',
-    'name=>this'
-  ]
+  @becomes 'age=>years_old languages=>technologies_known name=>this'
 
   def bar do
     fake_factory
