@@ -56,6 +56,8 @@ $ iex -S mix
 
 ### Running as part of a module
 
+**Example 1:**
+
 ```elixir
 defmodule Foo do
   use MapRewire
@@ -67,21 +69,69 @@ defmodule Foo do
   ]
 
   def bar do
-    do_some_request()
-    |> get_some_data
+    fake_factory
     |> final
   end
 
-  defp do_some_request do
-    #...
-  end
-
-  defp get_some_data(request) do
-    #...
+  defp fake_factory do
+    %{
+      "id" => "234923409",
+      "name" => "asdf",
+      "body_html" => "asdfasdf"
+    }
   end
 
   def final(data) do
     data<~@becomes
   end
 end
+```
+
+Calling `Foo.bar()` will result in the output:
+
+```elixir
+ [
+   %{"id" => "234923409", "name" => "asdf", "body_html" => "asdfasdf"},
+   %{"shopify_id" => "234923409", "title" => "asdf", "description" => "asdfasdf"}
+ ]
+```
+
+**Example 2:**
+
+```elixir
+defmodule Foo do
+  use MapRewire
+
+  @becomes [
+    'age=>years_old',
+    'languages=>technologies_known',
+    'name=>this'
+  ]
+
+  def bar do
+    fake_factory
+    |> final
+  end
+
+  defp fake_factory do
+    %{
+      "age"=> 31,
+      "languages"=> ["Erlang", "Ruby", "Elixir"],
+      "name"=> "John"
+    }
+  end
+
+  def final(data) do
+    data<~@becomes
+  end
+end
+```
+
+Calling `Foo.bar()` will result in the output:
+
+```elixir
+[
+   %{ "age"=> 31, "languages"=> ["Erlang", "Ruby", "Elixir"], "name"=> "John" },
+   %{ "years_old"=> 31, "technologies_known"=> ["Erlang", "Ruby", "Elixir"], "this"=> "John" }
+ ]
 ```
