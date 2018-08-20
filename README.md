@@ -6,7 +6,7 @@ Syntactic sugar to simply bulk rekey maps. MapRewire takes two arguments, data (
 
 Simply because I am super lazy, and writing out functions to take maps and convert them to different keys was boring (and irritating) the shit out of me.
 
-writing out `%{"id"=>"234923409", "title"=>"asdf"}<~['title=>name', 'id=>another_id']` is a much nicer than: `defp convert_map(data), do: %{ "another_id" => data["id"], "name" => data["title"] }`.
+IMHO rekeying maps with MapRewire is much nicer than having to write boilerplate like `defp from_x_to_y(data), do: %{ "another_id" => data["id"], "name" => data["title"] }`
 
 ### TL;DR; Syntax
 
