@@ -57,8 +57,8 @@ $ iex -S mix
  iex(1)> use MapRewire
  iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>["title=>name", "id=>shopify_id"]
  [
-   %{"id" => "234923409", "name" => "asdf"},
-   %{"shopify_id" => "234923409", "title" => "asdf"}
+   %{"id" => "234923409", "title" => "asdf"},
+   %{"shopify_id" => "234923409", "name" => "asdf"}
  ]
 ```
 
@@ -68,8 +68,8 @@ $ iex -S mix
  iex(1)> use MapRewire
  iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>"title=>name id=>shopify_id"
  [
-   %{"id" => "234923409", "name" => "asdf"},
-   %{"shopify_id" => "234923409", "title" => "asdf"}
+	 %{"id" => "234923409", "title" => "asdf"},
+   %{"shopify_id" => "234923409", "name" => "asdf"}
  ]
 ```
 
@@ -84,8 +84,8 @@ $ iex -S mix
  }
  iex(3)> content<~>"title=>name id=>shopify_id body_html=>desc no_match=>wow_much_field"
  [
-   %{"id" => "234923409", "name" => "asdf", "body_html" => "asdf"},
-   %{"shopify_id" => "234923409", "title" => "asdf", "desc" => "asdf"}
+   %{"id" => "234923409", "title" => "asdf", "body_html" => "asdf"},
+   %{"shopify_id" => "234923409", "name" => "asdf", "desc" => "asdf"}
  ]
 ```
 
@@ -101,8 +101,8 @@ $ iex -S mix
  iex(3)> transformation = "title=>name id=>shopify_id body_html=>desc no_match=>wow_much_field"
  iex(4)> content<~>transformation
  [
-   %{"id" => "234923409", "name" => "asdf", "body_html" => "asdf"},
-   %{"shopify_id" => "234923409", "title" => "asdf", "desc" => "asdf"}
+   %{"id" => "234923409", "name" => "title", "body_html" => "asdf"},
+   %{"shopify_id" => "234923409", "name" => "asdf", "desc" => "asdf"}
  ]
 ```
 
@@ -119,7 +119,7 @@ $ iex -S mix
  iex(4)> content<~>transformation
  [
    %{"id" => "234923409", "name" => "asdf", "body_html" => "asdf"},
-   %{"shopify_id" => "234923409", "title" => "asdf", "desc" => "asdf"}
+	 %{"shopify_id" => "234923409", "name" => "asdf", "desc" => "asdf"}
  ]
 ```
 
@@ -145,7 +145,7 @@ defmodule Foo do
   defp fake_factory do
     %{
       "id" => "234923409",
-      "name" => "asdf",
+      "title" => "asdf",
       "body_html" => "asdfasdf"
     }
   end
@@ -160,8 +160,8 @@ Calling `Foo.bar()` will result in the output:
 
 ```elixir
  [
-   %{"id" => "234923409", "name" => "asdf", "body_html" => "asdfasdf"},
-   %{"shopify_id" => "234923409", "title" => "asdf", "description" => "asdfasdf"}
+   %{"id" => "234923409", "title" => "asdf", "body_html" => "asdfasdf"},
+   %{"shopify_id" => "234923409", "name" => "asdf", "description" => "asdfasdf"}
  ]
 ```
 
