@@ -41,7 +41,8 @@ defmodule MapRewire.MixProject do
 
   defp package do
     [
-      files: ["lib", "mix.exs", "README*", "LICENSE*"],
+      files: ["lib", "mix.exs", "config", "README*", "LICENSE*"],
+      licenses: ["The MIT License (MIT)"],
       maintainers: ["Jordan Parker"],
       links: %{"GitHub" => "https://github.com/byjord/MapRewire"}
     ]
