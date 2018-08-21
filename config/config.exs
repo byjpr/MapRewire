@@ -3,3 +3,5 @@
 use Mix.Config
 
 config :map_rewire, debug?: false
+
+import_config "#{Mix.env()}.exs"
