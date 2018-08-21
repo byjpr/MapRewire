@@ -51,6 +51,8 @@ $ iex -S mix
 
 ### Running in iex
 
+**Example 1:** Inline example using a list transformation
+
 ```elixir
  iex(1)> use MapRewire
  iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>["title=>name", "id=>shopify_id"]
@@ -59,6 +61,8 @@ $ iex -S mix
    %{"shopify_id" => "234923409", "title" => "asdf"}
  ]
 ```
+
+**Example 2:** Inline example using a string transformation
 
 ```elixir
  iex(1)> use MapRewire
@@ -69,6 +73,8 @@ $ iex -S mix
  ]
 ```
 
+**Example 3:** Mixed example with a string transformation
+
 ```elixir
  iex(1)> use MapRewire
  iex(2)> content = %{
@@ -77,6 +83,40 @@ $ iex -S mix
 	 "body_html"=>"asdf"
  }
  iex(3)> content<~>"title=>name id=>shopify_id body_html=>desc no_match=>wow_much_field"
+ [
+   %{"id" => "234923409", "name" => "asdf", "body_html" => "asdf"},
+   %{"shopify_id" => "234923409", "title" => "asdf", "desc" => "asdf"}
+ ]
+```
+
+**Example 4:** Dynamic example with a string transformation
+
+```elixir
+ iex(1)> use MapRewire
+ iex(2)> content = %{
+	 "id"=>"234923409",
+	 "title"=>"asdf",
+	 "body_html"=>"asdf"
+ }
+ iex(3)> transformation = "title=>name id=>shopify_id body_html=>desc no_match=>wow_much_field"
+ iex(4)> content<~>transformation
+ [
+   %{"id" => "234923409", "name" => "asdf", "body_html" => "asdf"},
+   %{"shopify_id" => "234923409", "title" => "asdf", "desc" => "asdf"}
+ ]
+```
+
+**Example 5:** Dynamic example with a list transformation
+
+```elixir
+ iex(1)> use MapRewire
+ iex(2)> content = %{
+	 "id"=>"234923409",
+	 "title"=>"asdf",
+	 "body_html"=>"asdf"
+ }
+ iex(3)> transformation = ["title=>name", "id=>shopify_id", "body_html=>desc"]
+ iex(4)> content<~>transformation
  [
    %{"id" => "234923409", "name" => "asdf", "body_html" => "asdf"},
    %{"shopify_id" => "234923409", "title" => "asdf", "desc" => "asdf"}
