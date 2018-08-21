@@ -1,4 +1,4 @@
-# MapRewire
+# MapRewire [![Build Status](https://travis-ci.org/byjord/MapRewire.svg?branch=master)](https://travis-ci.org/byjord/MapRewire) [![Coverage Status](https://coveralls.io/repos/github/byjord/MapRewire/badge.svg?branch=master)](https://coveralls.io/github/byjord/MapRewire?branch=master)
 
 Syntactic sugar to simply bulk rekey maps. MapRewire takes two arguments, data (map) and transformation (list of transformations / string of transformations separated by whitespace).
 
