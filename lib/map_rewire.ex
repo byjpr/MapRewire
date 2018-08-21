@@ -1,47 +1,13 @@
 defmodule MapRewire do
+  @debug Application.get_env(:map_rewire, :debug?)
+  @transform_to "=>"
+
   @moduledoc """
-  Complete syntactic sugar to rekey maps.
+  Syntactic sugar to simply bulk rekey maps. MapRewire takes two arguments, data (map) and transformation (list of transformations / string of transformations separated by whitespace).
 
-  ### Example 1
-
-  ```elixir
-   iex(1)> use MapRewire
-   iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>['title=>name', 'id=>shopify_id']
-   [
-  	 %{"id" => "234923409", "name" => "asdf"},
-  	 %{"shopify_id" => "234923409", "title" => "asdf"}
-   ]```
-
-  ### Example 2
-
-  ```elixir
-  defmodule Foo do
-    use MapRewire
-
-    @becomes [
-    	'id=>shopify_id',
-    	'title=>name',
-    	'body_html=>description'
-    ]
-
-    def bar do
-    	do_some_request()
-    	|> get_some_data
-    	|> final
-    end
-
-    defp do_some_request do
-    	#...
-    end
-
-    defp get_some_data(request) do
-    	#...
-    end
-
-    def final(data) do
-    	data<~>@becomes
-    end
-  end```
+  1.  Main Syntax: `left<~>right` (`content<~>transformation`). Left value is the map that holds the data and keys you would like to update, Right value is an Elixir List that contains a string for each of the keys that you would like to update.
+  2.  Transformation Syntax: `left=>right` (`from=>to`). Left is the original key, right is the new key.
+  3.  Return Syntax: `[left, right]` (`[ original, rekeyed ]`). `left` is the original map. `right` is the new, rekeyed, map.
   """
 
   require Logger
@@ -52,22 +18,33 @@ defmodule MapRewire do
     end
   end
 
-  @transform_to "=>"
-  @debug Application.get_env(:map_rewire, :debug?)
+  @doc """
+  Macro syntax sugar to enable calling `rewire` in an elixir like way.
 
-  @doc false
+  **Input params:**
+  1. `data` is passed as `content`
+  2. `transforms` is passed as `list` or `binary`.
+
+  **Output:**
+
+  `[left, right]` (`[ original, rekeyed ]`). `left` is the original map. `right` is the new, rekeyed, map.
+  """
   defmacro data <~> transforms do
     quote do
       rewire(unquote(data), unquote(transforms))
     end
   end
 
-  # MapRewire.rewrite(%{"id"=>"234923409", "title"=>"asdf"}, ~w(title=>name id=>shopify_id))
-  # %{"shopify_id"=>"234923409", "name"=>"asdf"}
-
   @doc """
-  `MapRewire.rewrite(%{"id"=>"234923409", "title"=>"asdf"}, ~w(title=>name id=>shopify_id))`
-  `MapRewire.rewrite(%{"id"=>"234923409"}, ['id=>shopify_id'])`
+  Maps over the Enum `content` and replaces the key if it matches with an item in `list`.
+
+  **Example 1:**
+
+  ```MapRewire.rewrite(%{"id"=>"234923409", "title"=>"asdf"}, ~w(title=>name id=>shopify_id))```
+
+  **Example 2:**
+
+  ```MapRewire.rewrite(%{"id"=>"234923409"}, ['id=>shopify_id'])```
   """
   def rewire(content, list) when is_map(content) and is_list(list) do
     if(@debug) do
@@ -84,11 +61,13 @@ defmodule MapRewire do
       Logger.info("[MapRewire:arg2]rewire#binary: #{inspect(binary)}")
     end
 
-    list = transform_binary_to_list(binary)
-
+    list = String.split("#{binary}", " ")
     rewire_do(content, list)
   end
 
+  #
+  # Rewire raise statements
+  #
   def rewire(arg1, arg2)
       when is_map(arg1) == false and (is_list(arg2) == false or is_binary(arg2) == false),
       do:
@@ -122,33 +101,30 @@ defmodule MapRewire do
           " Arg1: `#{inspect(arg1)}`, Arg2: `#{inspect(arg2)}`"
       )
 
+  # logic for rewire
   defp rewire_do(content, list) do
     if(@debug) do
       Logger.info("[MapRewire:arg1]rewire_do#content: #{inspect(content)}")
       Logger.info("[MapRewire:arg2]rewire_do#list: #{inspect(list)}")
     end
 
-    Enum.map(list, &transform_key_to_list/1)
-    |> Enum.map(fn x -> replace_key(x, content) end)
+    transform_list = rewire_do_create_transform_list(list)
+
+    [
+      content,
+      recursion(transform_list, content)
+    ]
   end
 
-  @doc """
-  `MapRewire.fromto_to_list('title=>name')`
-  output: `['title', 'name']`
-  """
-  def transform_binary_to_list(item) do
+  defp rewire_do_create_transform_list(input) do
     if(@debug) do
-      Logger.info("[MapRewire]transform_binary_to_list#item: #{inspect(item)}")
+      Logger.info("[MapRewire]rewire_do_create_transform_list#input: #{inspect(input)}")
     end
 
-    String.split("#{item}", " ")
+    Enum.map(input, &transform_key_to_list/1)
   end
 
-  @doc """
-  `MapRewire.fromto_to_list('title=>name')`
-  output: `['title', 'name']`
-  """
-  def transform_key_to_list(item) do
+  defp transform_key_to_list(item) do
     if(@debug) do
       Logger.info("[MapRewire]transform_key_to_list#item: #{inspect(item)}")
     end
@@ -156,11 +132,19 @@ defmodule MapRewire do
     String.split("#{item}", "#{@transform_to}")
   end
 
-  @doc """
-  Takes `map`, removes key & value for `key1`, adds `key2` with the value of `key1`
-  `MapRewire.replace_key([:title, :name], map)`
-  """
-  def replace_key([key1, key2], map) do
+  defp recursion([key1, key2], map) when is_binary(key1) and is_binary(key2),
+    do: replace_key([key1, key2], map)
+
+  defp recursion([], map), do: map
+
+  defp recursion([head | tail], map) when is_list(head) and is_list(tail) do
+    new_map = replace_key(head, map)
+    recursion(tail, new_map)
+  end
+
+  # Takes `map`, removes key & value for `key1`, adds `key2` with the value of `key1`
+  # `MapRewire.replace_key([:title, :name], map)`
+  defp replace_key([key1, key2], map) do
     if(@debug) do
       Logger.info("[MapRewire]replace_key#key1: #{inspect(key1)}")
       Logger.info("[MapRewire]replace_key#key2: #{inspect(key2)}")
