@@ -12,7 +12,7 @@ IMHO rekeying maps with MapRewire is much nicer than having to write boilerplate
 
 1.  Main Syntax: `left<~>right` (`content<~>transformation`). Left value is the map that holds the data and keys you would like to update, Right value is an Elixir List that contains a string for each of the keys that you would like to update.
 2.  Transformation Syntax: `left=>right` (`from=>to`). Left is the original key, right is the new key.
-3.  Return Syntax: `[left, right]` (`[ first, second ]`). `left` is the original map. `right` is the new, rekeyed, map.
+3.  Return Syntax: `[left, right]` (`[ original, rekeyed ]`). `left` is the original map. `right` is the new, rekeyed, map.
 
 ## Getting started
 
