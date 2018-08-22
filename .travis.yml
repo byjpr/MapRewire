@@ -7,3 +7,7 @@ env:
   - MIX_ENV=test
 script:
   - "mix do deps.get, test && mix compile && mix coveralls.travis --pro"
+cache:
+  directories:
+    - _build
+    - deps
