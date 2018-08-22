@@ -1,6 +1,8 @@
 [![Hero block](https://raw.githubusercontent.com/byjord/Assets/master/MapRewire.png)](https://github.com/byjord/MapRewire)
 
-[![Build Status](https://travis-ci.org/byjord/MapRewire.svg?branch=master)](https://travis-ci.org/byjord/MapRewire) [![Coverage Status](https://coveralls.io/repos/github/byjord/MapRewire/badge.svg?branch=master)](https://coveralls.io/github/byjord/MapRewire?branch=master)
+[![Travis Build Status](https://img.shields.io/travis/byjord/MapRewire.svg?style=flat-square)](https://travis-ci.org/byjord/MapRewire)
+[![Coverage Status](https://img.shields.io/coveralls/github/byjord/MapRewire.svg?style=flat-square)](https://coveralls.io/github/byjord/MapRewire)
+[![Libraries.io for releases](https://img.shields.io/librariesio/release/hex/map_rewire.svg?style=flat-square)](https://libraries.io/hex/map_rewire)
 
 Syntactic sugar to simply bulk rekey maps. MapRewire takes two arguments, data (map) and transformation (list of transformations / string of transformations separated by whitespace).
 
