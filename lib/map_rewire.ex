@@ -151,7 +151,25 @@ defmodule MapRewire do
       Logger.info("[MapRewire]replace_key#map: #{inspect(map)}")
     end
 
-    {value, new_map} = Map.pop(map, key1)
-    Map.put_new(new_map, key2, value)
+    case Map.has_key?(map, key1) do
+      true ->
+        if(@debug) do
+          Logger.info(
+            "[MapRewire]replace_key: #{inspect(key1)} is present, moving it to a new map with the new key #{
+              inspect(key2)
+            }"
+          )
+        end
+
+        {value, new_map} = Map.pop(map, key1)
+        Map.put_new(new_map, key2, value)
+
+      false ->
+        if(@debug) do
+          Logger.info("[MapRewire]replace_key: #{inspect(key1)} is not present, skipping...")
+        end
+
+        map
+    end
   end
 end
