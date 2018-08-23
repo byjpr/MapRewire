@@ -25,7 +25,7 @@ IMHO rekeying maps with MapRewire is much nicer than having to write boilerplate
 ```elixir
 def deps do
   [
-    {:map_rewire, "~> 0.1.0"}
+    {:map_rewire, "~> 0.1.1"}
   ]
 end
 ```
