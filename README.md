@@ -7,12 +7,12 @@
 Bulk rekey your maps. Simple shit bud. (☞ﾟ ヮ ﾟ)☞
 
 * [Why did I do this?](#why-did-i-do-this)
-* [TL;DR; Syntax](#tl-dr--syntax)
+* [TL;DR; Syntax](#tldr-syntax)
 * [Contributors](#contributors)
 * [Getting started](#getting-started)
 	- [1. Add as a dependency](#1-add-as-a-dependency)
 	- [2. Download](#2-download)
-	- [3 (Optionally). Want to see inside MapRewire?](#3--optionally--want-to-see-inside-maprewire)
+	- [3 (Optionally). Want to see inside MapRewire?](#3-optionally-want-to-see-inside-maprewire)
 	- [4. Run!](#4-run)
 * [Usage](#usage)
 	- [Running in iex](#running-in-iex)
