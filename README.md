@@ -4,19 +4,37 @@
 [![Coverage Status](https://img.shields.io/coveralls/github/byjord/MapRewire.svg?style=flat-square)](https://coveralls.io/github/byjord/MapRewire)
 [![Libraries.io for releases](https://img.shields.io/librariesio/release/hex/map_rewire.svg?style=flat-square)](https://libraries.io/hex/map_rewire)
 
-Syntactic sugar to simply bulk rekey maps. MapRewire takes two arguments, data (map) and transformation (list of transformations / string of transformations separated by whitespace).
+Bulk rekey your maps. Simple shit bud. (☞ﾟ ヮ ﾟ)☞
+
+- [Why did I do this?](#why-did-i-do-this)
+- [TL;DR; Syntax](#tl-dr--syntax)
+* [Getting started](#getting-started)
+	- [1. Add as a dependency](#1-add-as-a-dependency)
+	- [2. Download](#2-download)
+	- [3 (Optionally). Want to see inside MapRewire?](#3--optionally--want-to-see-inside-maprewire-)
+	- [4. Run!](#4-run-)
+* [Usage](#usage)
+	- [Running in iex](#running-in-iex)
+		+ [Inline example using a list transformation](#inline-example-using-a-list-transformation)
+		+ [Inline example using a string transformation](#inline-example-using-a-string-transformation)
+		+ [Mixed example with a string transformation](#mixed-example-with-a-string-transformation)
+		+ [Dynamic example with a string transformation](#dynamic-example-with-a-string-transformation)
+		+ [Dynamic example with a list transformation](#dynamic-example-with-a-list-transformation)
+	- [Running as part of a module](#running-as-part-of-a-module)
+
+* [Contributors](#contributors)
 
 ### Why did I do this?
 
-Simply because I am super lazy, and writing out functions to take maps and convert them to different keys was boring (and irritating) the shit out of me.
+Simply because I am _super lazy_, and writing out functions to take maps and convert them to different keys was boring (and irritating) the shit out of me.
 
-IMHO rekeying maps with MapRewire is much nicer than having to write boilerplate like `defp from_x_to_y(data), do: %{ "another_id" => data["id"], "name" => data["title"] }`
+Stop writing `defp from_x_to_y(data), do: %{ "another_id" => data["id"], "name" => data["title"] }`.
 
 ### TL;DR; Syntax
 
-1.  Main Syntax: `left<~>right` (`content<~>transformation`). Left value is the map that holds the data and keys you would like to update, Right value is an Elixir List that contains a string for each of the keys that you would like to update.
-2.  Transformation Syntax: `left=>right` (`from=>to`). Left is the original key, right is the new key.
-3.  Return Syntax: `[left, right]` (`[ original, rekeyed ]`). `left` is the original map. `right` is the new, rekeyed, map.
+1.  Macro: `content<~>transformation`, content is your data, transformation is your rules.
+2.  Content: Any map. BYOD.
+3.  Transformation: `from=>to`. Left is the original key, right is the new key.
 
 ## Getting started
 
@@ -25,7 +43,7 @@ IMHO rekeying maps with MapRewire is much nicer than having to write boilerplate
 ```elixir
 def deps do
   [
-    {:map_rewire, "~> 0.1.1"}
+    {:map_rewire, "~> 0.2.0"}
   ]
 end
 ```
@@ -55,7 +73,7 @@ $ iex -S mix
 
 ### Running in iex
 
-**Example 1:** Inline example using a list transformation
+#### Inline example using a list transformation
 
 ```elixir
  iex(1)> use MapRewire
@@ -66,7 +84,7 @@ $ iex -S mix
  ]
 ```
 
-**Example 2:** Inline example using a string transformation
+#### Inline example using a string transformation
 
 ```elixir
  iex(1)> use MapRewire
@@ -77,7 +95,7 @@ $ iex -S mix
  ]
 ```
 
-**Example 3:** Mixed example with a string transformation
+#### Mixed example with a string transformation
 
 ```elixir
  iex(1)> use MapRewire
@@ -93,7 +111,7 @@ $ iex -S mix
  ]
 ```
 
-**Example 4:** Dynamic example with a string transformation
+#### Dynamic example with a string transformation
 
 ```elixir
  iex(1)> use MapRewire
@@ -110,7 +128,7 @@ $ iex -S mix
  ]
 ```
 
-**Example 5:** Dynamic example with a list transformation
+#### Dynamic example with a list transformation
 
 ```elixir
  iex(1)> use MapRewire
@@ -204,3 +222,10 @@ Calling `Foo.bar()` will result in the output:
    %{"years_old" => 31, "technologies_known" => ["Erlang", "Ruby", "Elixir"], "this" => "John"}
  ]
 ```
+
+## Contributors
+
+| [![byjord](https://avatars0.githubusercontent.com/u/6415727?v=4&s=80)](https://github.com/byjord) | [![halostatue](https://avatars3.githubusercontent.com/u/11361?v=4&s=80)](https://github.com/halostatue) |
+| :-----------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: |
+|                                [byjord](https://github.com/byjord)                                |                               [halostatue](https://github.com/halostatue)                               |
+
