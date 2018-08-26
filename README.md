@@ -13,7 +13,7 @@ Bulk rekey your maps. Simple shit bud. (☞ﾟ ヮ ﾟ)☞
 	- [1. Add as a dependency](#1-add-as-a-dependency)
 	- [2. Download](#2-download)
 	- [3 (Optionally). Want to see inside MapRewire?](#3--optionally--want-to-see-inside-maprewire)
-	- [4. Run!](#4-run-)
+	- [4. Run!](#4-run)
 * [Usage](#usage)
 	- [Running in iex](#running-in-iex)
 		+ [Inline example using a list transformation](#inline-example-using-a-list-transformation)
