@@ -6,13 +6,21 @@
 
 Bulk rekey your maps. Simple shit bud. (☞ﾟ ヮ ﾟ)☞
 
-- [Why did I do this?](#why-did-i-do-this)
-- [TL;DR; Syntax](#tl-dr--syntax)
-
-* [Getting started](#getting-started) - [1. Add as a dependency](#1-add-as-a-dependency) - [2. Download](#2-download) - [3 (Optionally). Want to see inside MapRewire?](#3--optionally--want-to-see-inside-maprewire-) - [4. Run!](#4-run-)
-* [Usage](#usage) - [Running in iex](#running-in-iex) + [Inline example using a list transformation](#inline-example-using-a-list-transformation) + [Inline example using a string transformation](#inline-example-using-a-string-transformation) + [Mixed example with a string transformation](#mixed-example-with-a-string-transformation) + [Dynamic example with a string transformation](#dynamic-example-with-a-string-transformation) + [Dynamic example with a list transformation](#dynamic-example-with-a-list-transformation) - [Running as part of a module](#running-as-part-of-a-module)
-
+* [Why did I do this?](#why-did-i-do-this)
+* [TL;DR; Syntax](#tl-dr--syntax)
 * [Contributors](#contributors)
+* [Getting started](#getting-started)
+	- [1. Add as a dependency](#1-add-as-a-dependency)
+	- [2. Download](#2-download)
+	- [3 (Optionally). Want to see inside MapRewire?](#3--optionally--want-to-see-inside-maprewire)
+	- [4. Run!](#4-run-)
+* [Usage](#usage) - [Running in iex](#running-in-iex)
+	- [Inline example using a list transformation](#inline-example-using-a-list-transformation)
+		+ [Inline example using a string transformation](#inline-example-using-a-string-transformation)
+		+ [Mixed example with a string transformation](#mixed-example-with-a-string-transformation)
+		+ [Dynamic example with a string transformation](#dynamic-example-with-a-string-transformation)
+		+ [Dynamic example with a list transformation](#dynamic-example-with-a-list-transformation)
+	- [Running as part of a module](#running-as-part-of-a-module)
 
 ### Why did I do this?
 
