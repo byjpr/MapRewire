@@ -8,19 +8,9 @@ Bulk rekey your maps. Simple shit bud. (☞ﾟ ヮ ﾟ)☞
 
 - [Why did I do this?](#why-did-i-do-this)
 - [TL;DR; Syntax](#tl-dr--syntax)
-* [Getting started](#getting-started)
-	- [1. Add as a dependency](#1-add-as-a-dependency)
-	- [2. Download](#2-download)
-	- [3 (Optionally). Want to see inside MapRewire?](#3--optionally--want-to-see-inside-maprewire-)
-	- [4. Run!](#4-run-)
-* [Usage](#usage)
-	- [Running in iex](#running-in-iex)
-		+ [Inline example using a list transformation](#inline-example-using-a-list-transformation)
-		+ [Inline example using a string transformation](#inline-example-using-a-string-transformation)
-		+ [Mixed example with a string transformation](#mixed-example-with-a-string-transformation)
-		+ [Dynamic example with a string transformation](#dynamic-example-with-a-string-transformation)
-		+ [Dynamic example with a list transformation](#dynamic-example-with-a-list-transformation)
-	- [Running as part of a module](#running-as-part-of-a-module)
+
+* [Getting started](#getting-started) - [1. Add as a dependency](#1-add-as-a-dependency) - [2. Download](#2-download) - [3 (Optionally). Want to see inside MapRewire?](#3--optionally--want-to-see-inside-maprewire-) - [4. Run!](#4-run-)
+* [Usage](#usage) - [Running in iex](#running-in-iex) + [Inline example using a list transformation](#inline-example-using-a-list-transformation) + [Inline example using a string transformation](#inline-example-using-a-string-transformation) + [Mixed example with a string transformation](#mixed-example-with-a-string-transformation) + [Dynamic example with a string transformation](#dynamic-example-with-a-string-transformation) + [Dynamic example with a list transformation](#dynamic-example-with-a-list-transformation) - [Running as part of a module](#running-as-part-of-a-module)
 
 * [Contributors](#contributors)
 
@@ -78,10 +68,10 @@ $ iex -S mix
 ```elixir
  iex(1)> use MapRewire
  iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>["title=>name", "id=>shopify_id"]
- [
+ {:ok,
    %{"id" => "234923409", "title" => "asdf"},
    %{"shopify_id" => "234923409", "name" => "asdf"}
- ]
+ }
 ```
 
 #### Inline example using a string transformation
@@ -89,10 +79,10 @@ $ iex -S mix
 ```elixir
  iex(1)> use MapRewire
  iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>"title=>name id=>shopify_id"
- [
+ {:ok,
 	 %{"id" => "234923409", "title" => "asdf"},
    %{"shopify_id" => "234923409", "name" => "asdf"}
- ]
+ }
 ```
 
 #### Mixed example with a string transformation
@@ -105,10 +95,10 @@ $ iex -S mix
 	 "body_html"=>"asdf"
  }
  iex(3)> content<~>"title=>name id=>shopify_id body_html=>desc no_match=>wow_much_field"
- [
+ {:ok,
    %{"id" => "234923409", "title" => "asdf", "body_html" => "asdf"},
    %{"shopify_id" => "234923409", "name" => "asdf", "desc" => "asdf"}
- ]
+ }
 ```
 
 #### Dynamic example with a string transformation
@@ -122,10 +112,10 @@ $ iex -S mix
  }
  iex(3)> transformation = "title=>name id=>shopify_id body_html=>desc no_match=>wow_much_field"
  iex(4)> content<~>transformation
- [
+ {:ok,
    %{"id" => "234923409", "name" => "title", "body_html" => "asdf"},
    %{"shopify_id" => "234923409", "name" => "asdf", "desc" => "asdf"}
- ]
+ }
 ```
 
 #### Dynamic example with a list transformation
@@ -139,10 +129,10 @@ $ iex -S mix
  }
  iex(3)> transformation = ["title=>name", "id=>shopify_id", "body_html=>desc"]
  iex(4)> content<~>transformation
- [
+ {:ok,
    %{"id" => "234923409", "name" => "asdf", "body_html" => "asdf"},
 	 %{"shopify_id" => "234923409", "name" => "asdf", "desc" => "asdf"}
- ]
+ }
 ```
 
 ### Running as part of a module
@@ -181,10 +171,10 @@ end
 Calling `Foo.bar()` will result in the output:
 
 ```elixir
- [
+ {:ok,
    %{"id" => "234923409", "title" => "asdf", "body_html" => "asdfasdf"},
    %{"shopify_id" => "234923409", "name" => "asdf", "description" => "asdfasdf"}
- ]
+ }
 ```
 
 **Example 2:**
@@ -217,10 +207,10 @@ end
 Calling `Foo.bar()` will result in the output:
 
 ```elixir
-[
+{:ok,
    %{"age" => 31, "languages" => ["Erlang", "Ruby", "Elixir"], "name" => "John"},
    %{"years_old" => 31, "technologies_known" => ["Erlang", "Ruby", "Elixir"], "this" => "John"}
- ]
+ }
 ```
 
 ## Contributors
@@ -228,4 +218,3 @@ Calling `Foo.bar()` will result in the output:
 | [![byjord](https://avatars0.githubusercontent.com/u/6415727?v=4&s=80)](https://github.com/byjord) | [![halostatue](https://avatars3.githubusercontent.com/u/11361?v=4&s=80)](https://github.com/halostatue) |
 | :-----------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: |
 |                                [byjord](https://github.com/byjord)                                |                               [halostatue](https://github.com/halostatue)                               |
-
