@@ -28,7 +28,7 @@ defmodule MapRewire.MixProject do
     [
       {:benchee, "~> 0.13", only: :dev},
       {:excoveralls, "~> 0.9", only: :test},
-      {:exprof, "~> 0.2.0"},
+      {:exprof, "~> 0.2.0", only: :test},
       {:ex_doc, "~> 0.18.0", only: :dev}
     ]
   end
