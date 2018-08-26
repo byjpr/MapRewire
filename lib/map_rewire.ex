@@ -1,14 +1,48 @@
 defmodule MapRewire do
+  @moduledoc """
+  MapRewire provides functions and operators to bulk rekey maps.
+
+  ```
+  iex> %{"id" => "234923409", "title" => "asdf"} <~> ~w(title=>name id=>shopify_id)
+  {:ok, %{"id" => "234923409", "title" => "asdf"}, %{"shopify_id" => "234923409", "name" => "asdf"}}
+  ```
+  """
+
+  @typedoc """
+  The shape of MapRewire transformation rules. These rules may be specified in
+  one of several ways. Transforms specified as strings are in the form
+  `left=>right` (note that there are no spaces around the arrow).
+
+  1.  As a string with multiple transforms separated by whitespace:
+
+      ```
+      "title=>name id=>shopify_id"
+      ```
+
+  2.  As a list of strings with one transform per string:
+
+      ```
+      ["title=>name", "id=>shopify_id"]
+      ```
+
+  3.  As any enumerable that iterates as tuples:
+
+      ```
+      [title: :name, id: :shopify_id]
+      [{"title", "name"}, {"id", "shopify_id"}]
+      %{"title" => :name, "id" => :shopify_id}
+      ```
+  """
+  @type transform_rules ::
+          String.t()
+          | list(String.t())
+          | keyword
+          | map
+          | list({String.t() | atom, String.t() | atom})
+
   @debug Application.get_env(:map_rewire, :debug?)
   @transform_to "=>"
-
-  @moduledoc """
-  Syntactic sugar to simply bulk rekey maps. MapRewire takes two arguments, data (map) and transformation (list of transformations / string of transformations separated by whitespace).
-
-  1.  Main Syntax: `left<~>right` (`content<~>transformation`). Left value is the map that holds the data and keys you would like to update, Right value is an Elixir List that contains a string for each of the keys that you would like to update.
-  2.  Transformation Syntax: `left=>right` (`from=>to`). Left is the original key, right is the new key.
-  3.  Return Syntax: `[left, right]` (`[ original, rekeyed ]`). `left` is the original map. `right` is the new, rekeyed, map.
-  """
+  @no_match "<~>NoMatch<~>" <> Base.encode16(:crypto.strong_rand_bytes(32))
 
   require Logger
 
@@ -19,157 +53,106 @@ defmodule MapRewire do
   end
 
   @doc """
-  Macro syntax sugar to enable calling `rewire` in an elixir like way.
-
-  **Input params:**
-  1. `data` is passed as `content`
-  2. `transforms` is passed as `list` or `binary`.
-
-  **Output:**
-
-  `[left, right]` (`[ original, rekeyed ]`). `left` is the original map. `right` is the new, rekeyed, map.
+  Remaps the map `content` and replaces the key if it matches with an item in
+  `list`. This makes `MapRewire.rewire/2` act as an operator.
   """
-  defmacro data <~> transforms do
-    quote do
-      rewire(unquote(data), unquote(transforms))
-    end
+  def data <~> transforms do
+    rewire(data, transforms, debug: false)
   end
 
   @doc """
-  Maps over the Enum `content` and replaces the key if it matches with an item in `list`.
+  Remaps the map `content` and replaces the key if it matches with an item in
+  `list`.
 
-  **Example 1:**
-
-  ```MapRewire.rewrite(%{"id"=>"234923409", "title"=>"asdf"}, ~w(title=>name id=>shopify_id))```
-
-  **Example 2:**
-
-  ```MapRewire.rewrite(%{"id"=>"234923409"}, ['id=>shopify_id'])```
+  ```
+  iex> MapRewire.rewrite(%{"id"=>"234923409", "title"=>"asdf"}, ~w(title=>name id=>shopify_id))
+  {:ok, %{"id" => "234923409", "title" => "asdf"}, %{"shopify_id" => "234923409", "name" => "asdf"}}
+  ```
   """
-  def rewire(content, list) when is_map(content) and is_list(list) do
-    if(@debug) do
+  @spec rewire(map, transform_rules, keyword) :: {:ok, old :: map, new :: map}
+  def rewire(content, rules, options \\ [])
+
+  def rewire(content, rules, options)
+      when is_map(content) and (is_list(rules) or is_binary(rules) or is_map(rules)) do
+    debug = Keyword.get(options, :debug, @debug)
+
+    if debug do
       Logger.info("[MapRewire:arg1]rewire#content: #{inspect(content)}")
-      Logger.info("[MapRewire:arg2]rewire#list: #{inspect(list)}")
+      Logger.info("[MapRewire:arg2]rewire#rules: #{inspect(rules)}")
     end
 
-    rewire_do(content, list)
+    new =
+      rules
+      |> normalize_rules(debug)
+      |> Enum.map(&rewire_entry(&1, content, debug))
+      |> Enum.reject(&match?({_, @no_match}, &1))
+      |> Enum.into(%{})
+
+    {content, new}
   end
 
-  def rewire(content, binary) when is_map(content) and is_binary(binary) do
-    if(@debug) do
-      Logger.info("[MapRewire:arg1]rewire#content: #{inspect(content)}")
-      Logger.info("[MapRewire:arg2]rewire#binary: #{inspect(binary)}")
-    end
-
-    list = String.split("#{binary}", " ")
-    rewire_do(content, list)
+  def rewire(content, rules, _options) when is_map(content) do
+    raise ArgumentError,
+          "[MapRewire:content<~>rules] expected rules to be a list, map, or string." <>
+            " content: `#{inspect(content)}`, rules: `#{inspect(rules)}`"
   end
 
-  #
-  # Rewire raise statements
-  #
-  def rewire(arg1, arg2)
-      when is_map(arg1) == false and (is_list(arg2) == false or is_binary(arg2) == false),
-      do:
-        raise(
-          ArgumentError,
-          "[MapRewire:arg1<~>arg2] bad arguments. Arg1 should be a map, Arg2 should be a list or string." <>
-            " Arg1: `#{inspect(arg1)}`, Arg2: `#{inspect(arg2)}`"
-        )
-
-  def rewire(arg1, _arg2) when is_map(arg1) == false,
-    do:
-      raise(
-        ArgumentError,
-        "[MapRewire:arg1<~>arg2] bad argument. Expected Arg1 to be a map, got `#{inspect(arg1)}`"
-      )
-
-  def rewire(_arg1, arg2) when is_list(arg2) == false and is_binary(arg2) == false,
-    do:
-      raise(
-        ArgumentError,
-        "[MapRewire:arg1<~>arg2] bad argument. Expected Arg2 to be a list or string, got `#{
-          inspect(arg2)
-        }`"
-      )
-
-  def rewire(arg1, arg2),
-    do:
-      raise(
-        ArgumentError,
-        "[MapRewire:arg1<~>arg2] bad arguments. Error reason not known. Please check inspections: " <>
-          " Arg1: `#{inspect(arg1)}`, Arg2: `#{inspect(arg2)}`"
-      )
-
-  # logic for rewire
-  defp rewire_do(content, list) do
-    if(@debug) do
-      Logger.info("[MapRewire:arg1]rewire_do#content: #{inspect(content)}")
-      Logger.info("[MapRewire:arg2]rewire_do#list: #{inspect(list)}")
-    end
-
-    transform_list = rewire_do_create_transform_list(list)
-
-    [
-      content,
-      recursion(transform_list, content)
-    ]
+  def rewire(content, _rules, _options) when not is_map(content) do
+    raise ArgumentError,
+          "[MapRewire:content<~>rules] expected content to be a map, got `#{inspect(content)}`"
   end
 
-  defp rewire_do_create_transform_list(input) do
-    if(@debug) do
-      Logger.info("[MapRewire]rewire_do_create_transform_list#input: #{inspect(input)}")
-    end
-
-    Enum.map(input, &transform_key_to_list/1)
+  def rewire(content, rules, _options) do
+    raise ArgumentError,
+          "[MapRewire:content<~>rules] bad arguments. Error reason not known. " <>
+            "Please check inspections: content: `#{inspect(content)}`, rules: `#{inspect(rules)}`"
   end
 
-  defp transform_key_to_list(item) do
-    if(@debug) do
-      Logger.info("[MapRewire]transform_key_to_list#item: #{inspect(item)}")
-    end
+  defp normalize_rules(rules, debug) when is_binary(rules) do
+    if(debug, do: Logger.info("[MapRewire]normalize_rules#rules (String): #{inspect(rules)}"))
 
-    String.split("#{item}", "#{@transform_to}")
+    rules
+    |> String.split(~r/\s/)
+    |> Enum.map(&normalize_rule(&1, debug))
   end
 
-  defp recursion([key1, key2], map) when is_binary(key1) and is_binary(key2),
-    do: replace_key([key1, key2], map)
-
-  defp recursion([], map), do: map
-
-  defp recursion([head | tail], map) when is_list(head) and is_list(tail) do
-    new_map = replace_key(head, map)
-    recursion(tail, new_map)
+  defp normalize_rules(rules, debug) when is_list(rules) do
+    if(debug, do: Logger.info("[MapRewire]normalize_rules#rules (List): #{inspect(rules)}"))
+    Enum.map(rules, &normalize_rule(&1, debug))
   end
 
-  # Takes `map`, removes key & value for `key1`, adds `key2` with the value of `key1`
-  # `MapRewire.replace_key([:title, :name], map)`
-  defp replace_key([key1, key2], map) do
-    if(@debug) do
-      Logger.info("[MapRewire]replace_key#key1: #{inspect(key1)}")
-      Logger.info("[MapRewire]replace_key#key2: #{inspect(key2)}")
-      Logger.info("[MapRewire]replace_key#map: #{inspect(map)}")
-    end
+  defp normalize_rules(rules, debug) when is_map(rules) do
+    if(debug, do: Logger.info("[MapRewire]normalize_rules#rules (Map): #{inspect(rules)}"))
+    Enum.to_list(rules)
+  end
 
-    case Map.has_key?(map, key1) do
-      true ->
-        if(@debug) do
-          Logger.info(
-            "[MapRewire]replace_key: #{inspect(key1)} is present, moving it to a new map with the new key #{
-              inspect(key2)
-            }"
-          )
-        end
+  defp normalize_rule({_old, _new} = rule, debug) do
+    if(debug, do: Logger.info("[MapRewire]normalize_rule#rule (Tuple): #{inspect(rule)}"))
+    rule
+  end
 
-        {value, new_map} = Map.pop(map, key1)
-        Map.put_new(new_map, key2, value)
+  defp normalize_rule(rule, debug) when is_binary(rule) do
+    if(debug, do: Logger.info("[MapRewire]normalize_rule#rule (String): #{inspect(rule)}"))
+    List.to_tuple(String.split(rule, @transform_to))
+  end
 
-      false ->
-        if(@debug) do
-          Logger.info("[MapRewire]replace_key: #{inspect(key1)} is not present, skipping...")
-        end
+  defp normalize_rule(rule, _) when is_list(rule) and length(rule) != 2 do
+    raise ArgumentError,
+          "[MapRewire:content<~>rules] bad argument: invalid rule format #{inspect(rule)}"
+  end
 
-        map
-    end
+  defp normalize_rule(rule, debug) when is_list(rule) do
+    if(debug, do: Logger.info("[MapRewire]normalize_rule#rule (List-2): #{inspect(rule)}"))
+    List.to_tuple(rule)
+  end
+
+  defp normalize_rule(rule, _) do
+    raise ArgumentError,
+          "[MapRewire:content<~>rules] bad argument: invalid rule format #{inspect(rule)}"
+  end
+
+  defp rewire_entry({old, new}, map, debug) do
+    if(debug, do: Logger.info("[MapRewire]rewire_entry: from #{old} to #{new}"))
+    {new, Map.get(map, old, @no_match)}
   end
 end
