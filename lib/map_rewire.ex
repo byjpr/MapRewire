@@ -42,7 +42,7 @@ defmodule MapRewire do
 
   @debug Application.get_env(:map_rewire, :debug?)
   @transform_to "=>"
-  @no_match "<~>NoMatch<~>" <> Base.encode16(:crypto.strong_rand_bytes(32))
+  @key_missing "<~>NoMatch<~>" <> Base.encode16(:crypto.strong_rand_bytes(16))
 
   require Logger
 
