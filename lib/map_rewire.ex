@@ -79,12 +79,11 @@ defmodule MapRewire do
 
   def rewire(content, rules, options)
       when is_map(content) and (is_list(rules) or is_binary(rules) or is_map(rules)) do
-    debug = Keyword.get(options, :debug, @debug)
+    debug = !!Keyword.get(options, :debug, @debug)
 
-    if debug do
-      Logger.info("[MapRewire:arg1]rewire#content: #{inspect(content)}")
-      Logger.info("[MapRewire:arg2]rewire#rules: #{inspect(rules)}")
-    end
+    log(debug, "[MapRewire]rewire#content: #{inspect(content)}")
+    log(debug, "[MapRewire]rewire#rules: #{inspect(rules)}")
+    log(debug, "[MapRewire]rewire#options: #{inspect(options)}")
 
     new =
       rules
@@ -97,24 +96,13 @@ defmodule MapRewire do
   end
 
   def rewire(content, rules, _options) when is_map(content) do
-    raise ArgumentError,
-          "[MapRewire:content<~>rules] expected rules to be a list, map, or string." <>
-            " content: `#{inspect(content)}`, rules: `#{inspect(rules)}`"
+    raise ArgumentError, "[MapRewire] expected rules to be a list, map, or string."
   end
 
-  def rewire(content, _rules, _options) when not is_map(content) do
-    raise ArgumentError,
-          "[MapRewire:content<~>rules] expected content to be a map, got `#{inspect(content)}`"
-  end
 
-  def rewire(content, rules, _options) do
-    raise ArgumentError,
-          "[MapRewire:content<~>rules] bad arguments. Error reason not known. " <>
-            "Please check inspections: content: `#{inspect(content)}`, rules: `#{inspect(rules)}`"
-  end
 
   defp normalize_rules(rules, debug) when is_binary(rules) do
-    if(debug, do: Logger.info("[MapRewire]normalize_rules#rules (String): #{inspect(rules)}"))
+    log(debug, "[MapRewire]normalize_rules#rules (String): #{inspect(rules)}")
 
     rules
     |> String.split(~r/\s/)
@@ -160,4 +148,8 @@ defmodule MapRewire do
     if(debug, do: Logger.info("[MapRewire]rewire_entry: from #{old} to #{new}"))
     {new, Map.get(map, old, @no_match)}
   end
+
+  defp log(false, _), do: nil
+
+  defp log(true, message), do: Logger.info(message)
 end
