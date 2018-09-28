@@ -48,6 +48,11 @@ defmodule MapRewire do
 
   defmacro __using__(_) do
     quote do
+      IO.warn(
+        "use MapRewire is deprecated; import it directly instead",
+        Macro.env().stacktrace(__ENV__)
+      )
+
       import MapRewire
     end
   end
