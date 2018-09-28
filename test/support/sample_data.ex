@@ -1,4 +1,6 @@
 defmodule SampleData do
+  @moduledoc false
+
   def sample do
     [
       content: [

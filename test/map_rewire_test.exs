@@ -1,6 +1,8 @@
 defmodule MapRewireTest do
   use ExUnit.Case, async: true
-  use MapRewire
+  use MapRewire, warn: false
+
+  doctest MapRewire, import: true
 
   setup _context do
     {:ok, SampleData.sample()}
