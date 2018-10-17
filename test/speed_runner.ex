@@ -1,4 +1,6 @@
 defmodule SpeedRunner do
+  @moduledoc false
+
   import ExProf.Macro
 
   @data SampleData.sample()
