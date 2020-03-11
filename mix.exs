@@ -29,7 +29,7 @@ defmodule MapRewire.MixProject do
       {:benchee, "~> 0.13", only: :dev},
       {:excoveralls, "~> 0.9", only: :test},
       {:exprof, "~> 0.2.0", only: :test},
-      {:ex_doc, "~> 0.19.1", only: :dev}
+      {:ex_doc, "~> 0.21.3", only: :dev}
     ]
   end
 
