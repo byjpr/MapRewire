@@ -1,13 +1,11 @@
-[![Hero block](https://raw.githubusercontent.com/byjord/Assets/master/MapRewire.png)](https://github.com/byjord/MapRewire)
+# MapRewire
 
 [![Elixir CI](https://github.com/byjpr/MapRewire/actions/workflows/elixir.yml/badge.svg)](https://github.com/byjpr/MapRewire/actions/workflows/elixir.yml)
-
-
 [![Travis Build Status](https://img.shields.io/travis/byjord/MapRewire.svg?style=flat-square)](https://travis-ci.org/byjord/MapRewire)
 [![Coverage Status](https://img.shields.io/coveralls/github/byjord/MapRewire.svg?style=flat-square)](https://coveralls.io/github/byjord/MapRewire)
 [![Libraries.io for releases](https://img.shields.io/librariesio/release/hex/map_rewire.svg?style=flat-square)](https://libraries.io/hex/map_rewire)
 
-Bulk rekey your maps. Simple shit bud. (☞ﾟ ヮ ﾟ)☞
+Bulk rekey your maps. Simple bud. (☞ﾟ ヮ ﾟ)☞
 
 * [Why did I do this?](#why-did-i-do-this)
 * [TL;DR; Syntax](#tldr-syntax)
@@ -26,9 +24,9 @@ Bulk rekey your maps. Simple shit bud. (☞ﾟ ヮ ﾟ)☞
 		+ [Dynamic example with a list transformation](#dynamic-example-with-a-list-transformation)
 	- [Running as part of a module](#running-as-part-of-a-module)
 
-### Why did I do this?
+### Why?
 
-Simply because I am _super lazy_, and writing out functions to take maps and convert them to different keys was boring (and irritating) the shit out of me.
+Simply because I am _super lazy_, and writing out functions to take maps and convert them to different keys was boring (and irritating) me.
 
 Stop writing `defp from_x_to_y(data), do: %{ "another_id" => data["id"], "name" => data["title"] }`.
 
