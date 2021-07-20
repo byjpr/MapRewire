@@ -26,7 +26,7 @@ defmodule MapRewire.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:benchee, "~> 0.13", only: :dev},
+      {:benchee, "~> 1.0", only: :dev},
       {:excoveralls, "~> 0.9", only: :test},
       {:exprof, "~> 0.2.0", only: :test},
       {:ex_doc, "~> 0.24.2", only: :dev}
