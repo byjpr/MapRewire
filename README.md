@@ -43,7 +43,7 @@ Stop writing `defp from_x_to_y(data), do: %{ "another_id" => data["id"], "name" 
 ```elixir
 def deps do
   [
-    {:map_rewire, "~> 0.2.0"}
+    {:map_rewire, "~> 0.3.0"}
   ]
 end
 ```
