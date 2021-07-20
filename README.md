@@ -1,28 +1,10 @@
 # MapRewire
 
 [![Elixir CI](https://github.com/byjpr/MapRewire/actions/workflows/elixir.yml/badge.svg)](https://github.com/byjpr/MapRewire/actions/workflows/elixir.yml)
-[![Travis Build Status](https://img.shields.io/travis/byjord/MapRewire.svg?style=flat-square)](https://travis-ci.org/byjord/MapRewire)
 [![Coverage Status](https://img.shields.io/coveralls/github/byjord/MapRewire.svg?style=flat-square)](https://coveralls.io/github/byjord/MapRewire)
 [![Libraries.io for releases](https://img.shields.io/librariesio/release/hex/map_rewire.svg?style=flat-square)](https://libraries.io/hex/map_rewire)
 
 Bulk rekey your maps. Simple bud. (☞ﾟ ヮ ﾟ)☞
-
-* [Why did I do this?](#why-did-i-do-this)
-* [TL;DR; Syntax](#tldr-syntax)
-* [Contributors](#contributors)
-* [Getting started](#getting-started)
-	- [1. Add as a dependency](#1-add-as-a-dependency)
-	- [2. Download](#2-download)
-	- [3 (Optionally). Want to see inside MapRewire?](#3-optionally-want-to-see-inside-maprewire)
-	- [4. Run!](#4-run)
-* [Usage](#usage)
-	- [Running in iex](#running-in-iex)
-		+ [Inline example using a list transformation](#inline-example-using-a-list-transformation)
-		+ [Inline example using a string transformation](#inline-example-using-a-string-transformation)
-		+ [Mixed example with a string transformation](#mixed-example-with-a-string-transformation)
-		+ [Dynamic example with a string transformation](#dynamic-example-with-a-string-transformation)
-		+ [Dynamic example with a list transformation](#dynamic-example-with-a-list-transformation)
-	- [Running as part of a module](#running-as-part-of-a-module)
 
 ### Why?
 
@@ -38,189 +20,12 @@ Stop writing `defp from_x_to_y(data), do: %{ "another_id" => data["id"], "name" 
 
 ## Getting started
 
-### 1. Add as a dependency
-
 ```elixir
 def deps do
   [
     {:map_rewire, "~> 0.3.0"}
   ]
 end
-```
-
-### 2. Download
-
-```bash
-$ mix deps.get
-```
-
-### 3 (Optionally). Want to see inside MapRewire?
-
-Add to config.exs
-
-```elixir
-config :map_rewire,
-  debug?: true
-```
-
-### 4. Run!
-
-```bash
-$ iex -S mix
-```
-
-## Usage
-
-### Running in iex
-
-#### Inline example using a list transformation
-
-```elixir
- iex(1)> use MapRewire
- iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>["title=>name", "id=>shopify_id"]
- {:ok,
-   %{"id" => "234923409", "title" => "asdf"},
-   %{"shopify_id" => "234923409", "name" => "asdf"}
- }
-```
-
-#### Inline example using a string transformation
-
-```elixir
- iex(1)> use MapRewire
- iex(2)> %{"id"=>"234923409", "title"=>"asdf"}<~>"title=>name id=>shopify_id"
- {:ok,
-	 %{"id" => "234923409", "title" => "asdf"},
-   %{"shopify_id" => "234923409", "name" => "asdf"}
- }
-```
-
-#### Mixed example with a string transformation
-
-```elixir
- iex(1)> use MapRewire
- iex(2)> content = %{
-	 "id"=>"234923409",
-	 "title"=>"asdf",
-	 "body_html"=>"asdf"
- }
- iex(3)> content<~>"title=>name id=>shopify_id body_html=>desc no_match=>wow_much_field"
- {:ok,
-   %{"id" => "234923409", "title" => "asdf", "body_html" => "asdf"},
-   %{"shopify_id" => "234923409", "name" => "asdf", "desc" => "asdf"}
- }
-```
-
-#### Dynamic example with a string transformation
-
-```elixir
- iex(1)> use MapRewire
- iex(2)> content = %{
-	 "id"=>"234923409",
-	 "title"=>"asdf",
-	 "body_html"=>"asdf"
- }
- iex(3)> transformation = "title=>name id=>shopify_id body_html=>desc no_match=>wow_much_field"
- iex(4)> content<~>transformation
- {:ok,
-   %{"id" => "234923409", "name" => "title", "body_html" => "asdf"},
-   %{"shopify_id" => "234923409", "name" => "asdf", "desc" => "asdf"}
- }
-```
-
-#### Dynamic example with a list transformation
-
-```elixir
- iex(1)> use MapRewire
- iex(2)> content = %{
-	 "id"=>"234923409",
-	 "title"=>"asdf",
-	 "body_html"=>"asdf"
- }
- iex(3)> transformation = ["title=>name", "id=>shopify_id", "body_html=>desc"]
- iex(4)> content<~>transformation
- {:ok,
-   %{"id" => "234923409", "name" => "asdf", "body_html" => "asdf"},
-	 %{"shopify_id" => "234923409", "name" => "asdf", "desc" => "asdf"}
- }
-```
-
-### Running as part of a module
-
-**Example 1:**
-
-```elixir
-defmodule Foo do
-  use MapRewire
-
-  @becomes [
-    "id=>shopify_id",
-    "title=>name",
-    "body_html=>description"
-  ]
-
-  def bar do
-    fake_factory
-    |> final
-  end
-
-  defp fake_factory do
-    %{
-      "id" => "234923409",
-      "title" => "asdf",
-      "body_html" => "asdfasdf"
-    }
-  end
-
-  def final(data) do
-    data<~>@becomes
-  end
-end
-```
-
-Calling `Foo.bar()` will result in the output:
-
-```elixir
- {:ok,
-   %{"id" => "234923409", "title" => "asdf", "body_html" => "asdfasdf"},
-   %{"shopify_id" => "234923409", "name" => "asdf", "description" => "asdfasdf"}
- }
-```
-
-**Example 2:**
-
-```elixir
-defmodule Foo do
-  use MapRewire
-
-  @becomes "age=>years_old languages=>technologies_known name=>this"
-
-  def bar do
-    fake_factory
-    |> final
-  end
-
-  defp fake_factory do
-    %{
-      "age"=> 31,
-      "languages"=> ["Erlang", "Ruby", "Elixir"],
-      "name"=> "John"
-    }
-  end
-
-  def final(data) do
-    data<~>@becomes
-  end
-end
-```
-
-Calling `Foo.bar()` will result in the output:
-
-```elixir
-{:ok,
-   %{"age" => 31, "languages" => ["Erlang", "Ruby", "Elixir"], "name" => "John"},
-   %{"years_old" => 31, "technologies_known" => ["Erlang", "Ruby", "Elixir"], "this" => "John"}
- }
 ```
 
 ## Contributors
