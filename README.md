@@ -1,5 +1,8 @@
 [![Hero block](https://raw.githubusercontent.com/byjord/Assets/master/MapRewire.png)](https://github.com/byjord/MapRewire)
 
+[![Elixir CI](https://github.com/byjpr/MapRewire/actions/workflows/elixir.yml/badge.svg)](https://github.com/byjpr/MapRewire/actions/workflows/elixir.yml)
+
+
 [![Travis Build Status](https://img.shields.io/travis/byjord/MapRewire.svg?style=flat-square)](https://travis-ci.org/byjord/MapRewire)
 [![Coverage Status](https://img.shields.io/coveralls/github/byjord/MapRewire.svg?style=flat-square)](https://coveralls.io/github/byjord/MapRewire)
 [![Libraries.io for releases](https://img.shields.io/librariesio/release/hex/map_rewire.svg?style=flat-square)](https://libraries.io/hex/map_rewire)
