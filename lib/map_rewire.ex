@@ -8,14 +8,12 @@ defmodule MapRewire do
   To rewire a map, build transformation rules and call `rewire/3`, or if
   MapRewire has been `import`ed, use the operator, `<~>`.
 
-  ```
-  iex> map   = %{"id" => "234923409", "title" => "asdf"}
-  iex> rules = "title=>name id=>shopify_id"
-  iex> map <~> rules
-  {%{"id" => "234923409", "title" => "asdf"}, %{"shopify_id" => "234923409", "name" => "asdf"}}
-  iex> MapRewire.rewire(map, rules) == (map <~> rules)
-  true
-  ```
+      iex> map   = %{"id" => "234923409", "title" => "asdf"}
+      iex> rules = "title=>name id=>shopify_id"
+      iex> map <~> rules
+      {%{"id" => "234923409", "title" => "asdf"}, %{"shopify_id" => "234923409", "name" => "asdf"}}
+      iex> MapRewire.rewire(map, rules) == (map <~> rules)
+      true
 
   ## Rewire Rules
 
@@ -91,20 +89,19 @@ defmodule MapRewire do
   expecting any normal map value. The `:default` will work as the third
   parameter of `Map.get/3` and be used instead of `key_missing/0`.
 
-  ```
-  iex> map   = %{"title" => "asdf"}
-  iex> rules = %{"title" => {:name, transform: &String.reverse/1}}
-  iex> map <~> rules
-  {%{"title" => "asdf"}, %{name: "fdsa"}}
+      iex> map   = %{"title" => "asdf"}
+      iex> rules = %{"title" => {:name, transform: &String.reverse/1}}
+      iex> map <~> rules
+      {%{"title" => "asdf"}, %{name: "fdsa"}}
 
-  # If "title" could be missing from the source map, the `transform` function
-  # should be written to handle `key_missing/0` values or have its own safe
-  # `default` value.
-  iex> map   = %{}
-  iex> rules = %{"title" => {:name, default: "unknown", transform: &String.reverse/1}}
-  iex> map <~> rules
-  {%{}, %{name: "nwonknu"}}
-  ```
+  If "title" could be missing from the source map, the `transform` function
+  should be written to handle `key_missing/0` values or have its own safe
+  `default` value.
+
+      iex> map   = %{}
+      iex> rules = %{"title" => {:name, default: "unknown", transform: &String.reverse/1}}
+      iex> map <~> rules
+      {%{}, %{name: "nwonknu"}}
 
   #### Producer Functions
 
@@ -112,37 +109,38 @@ defmodule MapRewire do
   key/value tuples. It may be provided either as `producer` or `{producer,
   options}` as shown below.
 
-  iex> dcs = fn value ->
-  ...>   unless MapRewire.key_missing?(value) do
-  ...>     [dept, class, subclass] =
-  ...>       value
-  ...>       |> String.split("-", parts: 3)
-  ...>       |> Enum.map(&String.to_integer/1)
-  ...>
-  ...>     Enum.to_list(%{"department" => dept, "class" => class, "subclass" => subclass})
-  ...>   end
-  ...> end
-  iex> map   = %{"title" => "asdf", "dcs" => "1-3-5"}
-  iex> rules = %{"title" => "name", "dcs" => dcs}
-  iex> map <~> rules
-  {%{"title" => "asdf", "dcs" => "1-3-5"}, %{"name" => "asdf", "department" => 1, "class" => 3, "subclass" => 5}}
+      iex> dcs = fn value ->
+      ...>   unless MapRewire.key_missing?(value) do
+      ...>     [dept, class, subclass] =
+      ...>       value
+      ...>       |> String.split("-", parts: 3)
+      ...>       |> Enum.map(&String.to_integer/1)
+      ...>
+      ...>     Enum.to_list(%{"department" => dept, "class" => class, "subclass" => subclass})
+      ...>   end
+      ...> end
+      iex> map   = %{"title" => "asdf", "dcs" => "1-3-5"}
+      iex> rules = %{"title" => "name", "dcs" => dcs}
+      iex> map <~> rules
+      {%{"title" => "asdf", "dcs" => "1-3-5"}, %{"name" => "asdf", "department" => 1, "class" => 3, "subclass" => 5}}
 
-  # If "title" could be missing from the source map, the `transform` function
-  # should be written to handle `key_missing/0` values or have its own safe
-  # `default` value.
+  If "title" could be missing from the source map, the `transform` function
+  should be written to handle `key_missing/0` values or have its own safe
+  `default` value.
 
-  iex> dcs = fn value ->
-  ...>   [dept, class, subclass] =
-  ...>     value
-  ...>     |> String.split("-", parts: 3)
-  ...>     |> Enum.map(&String.to_integer/1)
-  ...>
-  ...>   Enum.to_list(%{"department" => dept, "class" => class, "subclass" => subclass})
-  ...> end
-  iex> map   = %{"title" => "asdf"}
-  iex> rules = %{"title" => "name", "dcs" => {dcs, default: "0-0-0"}}
-  iex> map <~> rules
-  {%{"title" => "asdf"}, %{"name" => "asdf", "department" => 0, "class" => 0, "subclass" => 0}}
+      iex> dcs = fn value ->
+      ...>   [dept, class, subclass] =
+      ...>     value
+      ...>     |> String.split("-", parts: 3)
+      ...>     |> Enum.map(&String.to_integer/1)
+      ...>
+      ...>   Enum.to_list(%{"department" => dept, "class" => class, "subclass" => subclass})
+      ...> end
+      iex> map   = %{"title" => "asdf"}
+      iex> rules = %{"title" => "name", "dcs" => {dcs, default: "0-0-0"}}
+      iex> map <~> rules
+      {%{"title" => "asdf"}, %{"name" => "asdf", "department" => 0, "class" => 0, "subclass" => 0}}
+
   """
 
   @transform_to "=>"
@@ -159,18 +157,16 @@ defmodule MapRewire do
   If no keys are to be produced (possibly because `value` is `key_missing/0`),
   either `nil` or an empty list (`[]`) should be returned.
 
-  ```
-  fn value ->
-    unless MapRewire.key_missing?(value) do
-      [dept, class, subclass] =
-        value
-        |> String.split("-", parts: 3)
-        |> Enum.map(&String.to_integer/1)
+      fn value ->
+        unless MapRewire.key_missing?(value) do
+          [dept, class, subclass] =
+            value
+            |> String.split("-", parts: 3)
+            |> Enum.map(&String.to_integer/1)
 
-      Enum.to_list(%{"department" => dept, "class" => class, "subclass" => subclass})
-    end
-  end
-  ```
+          Enum.to_list(%{"department" => dept, "class" => class, "subclass" => subclass})
+        end
+      end
   """
   @type producer ::
           (Map.value() -> nil | {Map.key(), Map.value()} | list({Map.key(), Map.value()}))
@@ -185,20 +181,19 @@ defmodule MapRewire do
   If the key should be omitted when `rewire/3` is called, `key_missing/0`
   should be returned.
 
-  ```
-  fn value ->
-    cond do
-      MapRewire.key_missing?(value) ->
-        value
+      fn value ->
+        cond do
+          MapRewire.key_missing?(value) ->
+            value
 
-      is_binary(value) ->
-        String.reverse(value)
+          is_binary(value) ->
+            String.reverse(value)
 
-      true ->
-        String.reverse(to_string(value))
-    end
-  end
-  ```
+          true ->
+            String.reverse(to_string(value))
+        end
+      end
+
   """
   @type transformer :: (Map.value() -> Map.value())
 
